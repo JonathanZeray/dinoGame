@@ -1,5 +1,6 @@
 body {
     background-color: grey;
+    font-family: 'Lobster', cursive;
 }
 
 #score {
@@ -12,6 +13,10 @@ body {
     margin-top: 3rem;
 }
 
+.highscoreContainer {
+    display: flex;
+    justify-content: center;
+}
 
 #game {
     width: 600px;
@@ -62,3 +67,35 @@ body {
     100% {left: -50px;}
 }
 
+#playAgainButton {
+    display: none;
+}
+
+.scoretable {
+    width: 350px;
+    font-size: 3rem;
+    margin: 10px auto;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  h3 {
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1;
+    margin: 0 0 15px 0;
+  }
+
+  button {
+    display: block;
+    width: 80px;
+    margin: 0 auto;
+  }
+
+  td {
+    font-size: 1.5rem;
+  }

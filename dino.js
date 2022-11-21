@@ -4,10 +4,16 @@ const dino = document.getElementById("dino");
 const rock = document.getElementById("rock");
 const score = document.getElementById("score");
 const button = document.getElementById("button");
+const hiscores = JSON.parse(localStorage.getItem('hiscores')) || [];
+const scoreList = document.querySelector('.scoretable');
+const playAgainButton = document.getElementById("playAgainButton");
+
+
 
 let counter = 0;
 let timeout;
 let timer_on = 0;
+
 
 
 function timedCount() {
@@ -46,46 +52,60 @@ button.addEventListener("click", () => {
     rockSlide();
 });
 
-
-
-
-// COLLISION CODE // 
 function nameStorage() {
-    let newName = prompt("Game over! Your score was: " + score.innerHTML + "\n\nWrite your name"); // stores the players name in a variable
-    const player = getPlayer(newName); // 
-    let newScore = Number(score.innerHTML);
-    location.reload();
-    // localStorage.setItem(newName, score.innerHTML);
-    player.newScore = Number(player.newScore || 0) + newScore;
-    localStorage.setItem('hiscores', JSON.stringify([player]));
+    let newName = prompt("You got a score of: " + score.innerHTML + " \nWhats your name?");
+        let newScore = Number(score.innerHTML);
+        // location.reload();
+
+        const scoreObj = {
+            names: newName,
+            scores: newScore
+        }; 
+
+        populateTable();
+
+        hiscores.push(scoreObj);
+        hiscores.sort( (a,b) =>  b.scores - a.scores);
+        hiscores.splice(5);
+        populateTable();
+        localStorage.setItem("hiscores", JSON.stringify(hiscores));     
 }
 
-/* 
-1. Find the existing players index. 
-2. Replace item in the index, with the updated score. 
-3. Send in setItem, for all of the players. 
-*/
-
-function getPlayer (newName) {
-    const hiscores = JSON.parse(localStorage.getItem('hiscores')) || [];
-    const player = hiscores.find(item => item.newName === newName);
-    if(!player) { 
-    return {newName, newScore: 0}
-}  
-return player;
-}
-
+function populateTable() {
+    scoreList.innerHTML = hiscores.map((row) => {
+      return `<tr><td>${row.names}</td><td>${row.scores}</tr>`;
+    }).join('');
+  }
 
 function collision() {
     const dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue("top"));
     const rockLeft = parseInt(window.getComputedStyle(rock).getPropertyValue("left"));
     if (rockLeft < 50 && rockLeft > 0 && dinoTop > 150 ) {
         nameStorage();
+        endGame();
     }
 }
 
 setInterval(() => {
-        collision();
+    collision();
 }, 50); 
 
+function clearScores() {
+    hiscores.splice(0, hiscores.length);
+    localStorage.setItem('hiscores', JSON.stringify(hiscores));
+    populateTable(hiscores, scoreList);
+  }
 
+  function endGame() {
+        rock.classList.remove("rock-animation");
+        score.style.display = "none";
+        button.style.display = "none";
+        playAgainButton.style.display = "block";
+
+    }
+
+    function playAgain() {
+        location.reload();
+    }
+
+    populateTable();
